@@ -1,4 +1,4 @@
-# Use official Node.js image to build the app
+# Use official Node.js image to build and serve the app
 FROM node:20-alpine AS builder
 
 WORKDIR /app
@@ -9,12 +9,12 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# Use a lightweight web server to serve the built app
-FROM nginx:alpine
+# Production image, copy built assets and serve with npm (serve)
+FROM node:20-alpine AS production
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+COPY package.json package-lock.json* .
+RUN npm install -g serve
 
-COPY --from=builder /app/dist /usr/share/nginx/html
-COPY ./nginx.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
-
+EXPOSE 3000
+CMD ["serve", "-s", "dist", "-l", "3000"]
