@@ -1,0 +1,30 @@
+name: Deploy to Dev (Auto)
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set environment variables for dev
+        id: env-vars
+        run: |
+          echo "SPRING_PROFILE=dev" >> $GITHUB_OUTPUT
+          echo "RENDER_DEPLOY_HOOK=${{ secrets.RENDER_DEV_DEPLOY_HOOK }}" >> $GITHUB_OUTPUT
+
+      - name: Deploy to Render (Dev)
+        run: |
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" -X POST ${{ steps.env-vars.outputs.RENDER_DEPLOY_HOOK }})
+          if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+            echo "Render deployment triggered successfully (HTTP $HTTP_STATUS)"
+          else
+            echo "Failed to trigger Render deployment (HTTP $HTTP_STATUS)"
+            exit 1
+          fi
+
