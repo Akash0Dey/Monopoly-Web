@@ -1,69 +1,104 @@
-# React + TypeScript + Vite
+# Monopoly Web
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern web application for Monopoly, built with React, TypeScript, Vite, and Tailwind CSS.
 
-Currently, two official plugins are available:
+## Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### Prerequisites
 
-## Expanding the ESLint configuration
+- Node.js (v18+ recommended)
+- npm (comes with Node.js)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Install dependencies
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Development
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+Open [http://localhost:5173](http://localhost:5173) in your browser.
+
+---
+
+## Tailwind CSS
+
+Tailwind is configured in `tailwind.config.js`:
 
 ```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
 ```
+
+Tailwind directives are included in `src/index.css`:
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+---
+
+## Linting & Formatting
+
+- **ESLint**: For code linting.
+- **Prettier**: For code formatting.
+
+### Run Lint
+
+```bash
+npm run lint
+```
+
+### Run Format
+
+```bash
+npm run format
+```
+
+---
+
+## Building for Production
+
+```bash
+npm run build
+```
+
+The output will be in the `dist/` directory.
+
+---
+
+## Docker
+
+A multi-stage Dockerfile is provided for production builds.
+
+### Build Docker Image
+
+```bash
+docker build -t monopoly-web .
+```
+
+### Run Docker Container
+
+```bash
+docker run -p 80:80 monopoly-web
+```
+
+---
+
+## Deploying as a Static Site (e.g., Render)
+
+1. **Build the project**:  
+   `npm run build`
+2. **Deploy the `dist/` folder** as your static site root.
+3. **For Render**:  
+   - Set the build command: `npm run build`
+   - Set the publish directory: `dist`
+
+---
