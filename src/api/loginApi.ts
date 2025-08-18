@@ -5,7 +5,7 @@ export class LoginAPI {
     static loginUrl = 'api/auth/login';
 
     static url(apiUrl: string) : string {
-        return this.baseUrl + apiUrl;
+        return this.baseUrl + '/' + apiUrl;
     }
 
     static post(apiUrl: string, data: Record<string, string>): Promise<Response> {
