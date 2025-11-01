@@ -1,10 +1,12 @@
 // @ts-ignore
 import Cookies from 'js-cookie';
-import type {userResponse} from "../types/userResponse.ts";
+import type {userResponse} from "../dto/userResponse.ts";
 import {Api} from "./api.ts";
+import type {successResponse} from "../dto/successResponse.ts";
 
 export class LoginAPI {
     static loginUrl = 'api/auth/login';
+    static logoutUrl = 'api/auth/logout';
     static isLoginedUrl = 'api/auth/isLoggedIn';
 
     static async login(data: Record<string, string>): Promise<string> {
@@ -19,6 +21,18 @@ export class LoginAPI {
         } catch (error) {
             console.error('Login failed:', error);
             return "Login failed";
+        }
+    }
+
+    static async logout(data: Record<string, string>): Promise<successResponse> {
+        try {
+            const response = await Api.post(Api.url(this.logoutUrl), data);
+            const userData: successResponse = await response.json();
+            console.log("Logout response:", userData);
+            return userData;
+        } catch (error) {
+            console.error('Login failed:', error);
+            return { success: false};
         }
     }
 

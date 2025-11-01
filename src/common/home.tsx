@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
+import {LoginAPI} from "../api/loginApi.ts";
+import type {successResponse} from "../dto/successResponse.ts";
 
 const Home = () => {
   const navigate = useNavigate()
@@ -16,14 +18,24 @@ const Home = () => {
   }, [navigate])
 
   const handleStartGame = () => {
-    console.log('Starting game...')
-    alert('Game started!')
+    console.log('Starting game...');
+    alert('Game started!');
   }
 
   const handleLogout = () => {
-    Cookies.remove('username')
-    Cookies.remove('roomId')
-    navigate('/login')
+    const username = Cookies.get("username");
+    if (!username) {
+      navigate('/login');
+      return;
+    }
+
+    LoginAPI.logout({username}).then((logoutResponse: successResponse) => {
+      if (logoutResponse.success) {
+        Cookies.remove('username');
+        Cookies.remove('roomId');
+        navigate('/login');
+      }
+    });
   }
 
   return (
