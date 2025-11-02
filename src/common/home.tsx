@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Cookies from 'js-cookie'
-import {LoginAPI} from "../api/loginApi.ts";
-import type {successResponse} from "../dto/successResponse.ts";
+import {logoutHandler} from "../auth/logout.ts";
 
 const Home = () => {
   const navigate = useNavigate()
@@ -18,24 +17,8 @@ const Home = () => {
   }, [navigate])
 
   const handleStartGame = () => {
-    console.log('Starting game...');
-    alert('Game started!');
-  }
-
-  const handleLogout = () => {
-    const username = Cookies.get("username");
-    if (!username) {
-      navigate('/login');
-      return;
-    }
-
-    LoginAPI.logout({username}).then((logoutResponse: successResponse) => {
-      if (logoutResponse.success) {
-        Cookies.remove('username');
-        Cookies.remove('roomId');
-        navigate('/login');
-      }
-    });
+    console.log('awaiting in lobby...');
+    navigate('/lobby');
   }
 
   return (
@@ -51,7 +34,7 @@ const Home = () => {
         </button>
 
         <button
-          onClick={handleLogout}
+          onClick={() => logoutHandler.handleLogout(navigate)}
           className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded"
         >
           Log Out

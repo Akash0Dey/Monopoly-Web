@@ -9,24 +9,26 @@ export class LoginAPI {
     static logoutUrl = 'api/auth/logout';
     static isLoginedUrl = 'api/auth/isLoggedIn';
 
-    static async login(data: Record<string, string>): Promise<string> {
+    static async login(data: Record<string, string>): Promise<boolean> {
         try {
             const response = await Api.post(Api.url(this.loginUrl), data);
             const userData: userResponse = await response.json();
 
+            console.log("Login response:", userData);
+
             Cookies.set('username', userData.username);
             Cookies.set('roomId', userData.roomId);
 
-            return "Welcome " + userData.username;
+            return response.status == 200;
         } catch (error) {
             console.error('Login failed:', error);
-            return "Login failed";
+            return false;
         }
     }
 
-    static async logout(data: Record<string, string>): Promise<successResponse> {
+    static async logout(): Promise<successResponse> {
         try {
-            const response = await Api.post(Api.url(this.logoutUrl), data);
+            const response = await Api.post(Api.url(this.logoutUrl));
             const userData: successResponse = await response.json();
             console.log("Logout response:", userData);
             return userData;

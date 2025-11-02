@@ -1,4 +1,5 @@
 import {envConfig} from "../config/env.ts";
+import Cookies from "js-cookie";
 
 export class Api {
     static baseUrl = envConfig.baseUrl;
@@ -12,7 +13,9 @@ export class Api {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'username': Cookies.get("username") || '',
             },
+            credentials: "include",
             body: JSON.stringify(data),
         });
     }
