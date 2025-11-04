@@ -3,21 +3,34 @@ import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
 import {logoutHandler} from "../auth/logout.ts";
 import {lobbyAPI} from "../api/lobbyApi.ts";
+import type {roomResponse} from "../dto/roomResponse.ts";
 
 const Lobby: React.FC = () => {
     const navigate = useNavigate();
-    const usernameFromCookie = Cookies.get('username');
     const roomIdFromCookie = Cookies.get('roomId');
 
-    const [username] = useState<string>(usernameFromCookie || '');
-    const [roomId] = useState<string>(roomIdFromCookie || '');
+    const [roomId, setRoomId] = useState<string>(roomIdFromCookie || '-');
+    const [players, setPlayers] = useState<Array<string>>([]);
+
+    const isMatchStarted = (roomResponse: roomResponse | null): boolean => {
+        if (!roomResponse) {
+            return false;
+        }
+
+        updateLobbyStatus(roomResponse);
+        return roomResponse.capacity == roomResponse.currentPlayers;
+    };
+
+    const updateLobbyStatus = (roomResponse: roomResponse) => {
+        setRoomId(roomResponse.roomId);
+        setPlayers(roomResponse.players);
+    }
 
     const pollIfGameStarted = () => {
         const intervalId = setInterval(() => {
-            lobbyAPI.isGameStarted().then(isStarted => {
-                if (isStarted) {
+            lobbyAPI.fetchLobbyStatus().then(roomResponse => {
+                if (isMatchStarted(roomResponse)) {
                     clearInterval(intervalId);
-                    navigate('/game');
                 }
             });
         }, 3000);
@@ -40,8 +53,8 @@ const Lobby: React.FC = () => {
     return (
         <div>
             <h1>Lobby</h1>
-            <p>User: {username}</p>
-            {roomId && <p>Room: {roomId}</p>}
+            <p>Players: {players.join(" , ")}</p>
+            <p>Room: {roomId}</p>
             <button onClick={handleLeaveLobby}>Back Home</button>
             <button onClick={() => logoutHandler.handleLogout(navigate)}>Logout</button>
         </div>
